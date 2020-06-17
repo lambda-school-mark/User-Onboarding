@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import logo from "./logo.svg";
+import axios from "axios";
+import * as Yup from "yup";
 import "./App.css";
 import Form from "./Form";
+import formValidation from "./formValidation";
 
 function App() {
   const initialFormValues = {
@@ -12,19 +14,38 @@ function App() {
     terms: false,
   };
 
-  const initialUsers = [
-    {
-      name: "Timbo",
-      email: "timboz@gmial.com",
-      password: "broWhat",
-    },
-  ];
+  const initialUsers = [];
+
+  // const initialUsers = [
+  //   {
+  //     name: "Timbo",
+  //     email: "timboz@gmial.com",
+  //     password: "broWhat",
+  //   },
+  // ];
 
   const [formValues, setFormValues] = useState(initialFormValues);
   const [users, setUsers] = useState(initialUsers);
+  const [formErrors, setFormErrors] = useState([]);
 
   const onInputChange = (event) => {
     const { name, value } = event.target;
+
+    Yup.reach(formValidation, name)
+      .validate(value)
+      .then(() => {
+        setFormErrors({
+          ...formErrors,
+          [name]: "",
+        });
+      })
+
+      .catch((error) => {
+        setFormErrors({
+          ...formErrors,
+          [name]: error.errors[0],
+        });
+      });
 
     setFormValues({
       ...formValues,
@@ -43,6 +64,18 @@ function App() {
 
   const onSubmit = (event) => {
     event.preventDefault();
+
+    const newUser = {
+      name: formValues.name,
+      email: formValues.email,
+      password: formValues.password,
+
+      terms: formValues.terms,
+    };
+
+    // setUsers({
+
+    // })
   };
 
   return (
@@ -52,6 +85,7 @@ function App() {
         onCheckBoxChange={onCheckBoxChange}
         onSubmit={onSubmit}
         values={formValues}
+        errors={formErrors}
       />
     </div>
   );
