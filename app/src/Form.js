@@ -38,7 +38,7 @@ const Form = (props) => {
         id="terms"
         onChange={onCheckBoxChange}
       />
-      <label htmlfor="terms">Agree to Terms of Service</label>
+      <label htmlFor="terms">Agree to Terms of Service</label>
       <input type="submit" />
     </form>
   );
