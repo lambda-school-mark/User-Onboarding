@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import * as Yup from "yup";
 import "./App.css";
@@ -22,9 +22,12 @@ function App() {
     terms: "",
   };
 
+  const initialDisabled = true;
+
   const [users, setUsers] = useState([]);
   const [formValues, setFormValues] = useState(initialFormValues);
   const [formErrors, setFormErrors] = useState(initialFormErrors);
+  const [disabled, setDisabled] = useState(initialDisabled);
 
   // const getUsers = () => {
   //   axios
@@ -101,6 +104,12 @@ function App() {
     });
   };
 
+  useEffect(() => {
+    formValidation.isValid(formValues).then((valid) => {
+      setDisabled(!valid);
+    });
+  }, [formValues]);
+
   const onSubmit = (event) => {
     event.preventDefault();
 
@@ -124,6 +133,7 @@ function App() {
         onSubmit={onSubmit}
         values={formValues}
         errors={formErrors}
+        disabled={disabled}
       />
       <div>
         {users.map((user) => {
