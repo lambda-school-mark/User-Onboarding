@@ -27,3 +27,17 @@ describe("Get name and input", () => {
     cy.get("input#submitBtn").should("be.disabled");
   });
 });
+
+describe("minimum character validation", () => {
+  it("visits site", () => {
+    cy.visit("http://localhost:3000");
+  });
+
+  it("checks that minimum character validation works", () => {
+    cy.get("input#name").type("bro");
+    cy.get("input#email").type("timbo@pimpmail.com");
+    cy.get("input#password").type("veryKOOL");
+    cy.get("form#submit").submit();
+    cy.get("input#submitBtn").should("be.disabled");
+  });
+});
