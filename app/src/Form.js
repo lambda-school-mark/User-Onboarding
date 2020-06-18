@@ -6,7 +6,7 @@ const Form = (props) => {
     <form onSubmit={onSubmit}>
       <div>
         <p>{errors.name}</p>
-        <p>{errors.username}</p>
+        <p>{errors.email}</p>
         <p>{errors.password}</p>
         <p>{errors.terms}</p>
       </div>
@@ -37,6 +37,7 @@ const Form = (props) => {
         name="terms"
         id="terms"
         onChange={onCheckBoxChange}
+        value={values.terms}
       />
       <label htmlFor="terms">Agree to Terms of Service</label>
       <input type="submit" />

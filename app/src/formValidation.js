@@ -8,6 +8,7 @@ const formValidation = Yup.object().shape({
     .email("Must be a valid email address.")
     .required("Must include email address."),
   password: Yup.string().required("Password is required."),
+  terms: Yup.boolean().oneOf([true], "Terms of Service required!"),
 });
 
 export default formValidation;

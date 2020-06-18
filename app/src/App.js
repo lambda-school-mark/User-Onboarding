@@ -4,35 +4,44 @@ import * as Yup from "yup";
 import "./App.css";
 import Form from "./Form";
 import formValidation from "./formValidation";
+import { v4 as uuid } from "uuid";
+import User from "./User";
 
 function App() {
   const initialFormValues = {
     name: "",
     email: "",
     password: "",
-
     terms: false,
   };
 
-  const initialUsers = [];
+  const initialFormErrors = {
+    name: "",
+    email: "",
+    password: "",
+    terms: "",
+  };
 
-  // const initialUsers = [
-  //   {
-  //     name: "Timbo",
-  //     email: "timboz@gmial.com",
-  //     password: "broWhat",
-  //   },
-  // ];
-
+  const [users, setUsers] = useState([]);
   const [formValues, setFormValues] = useState(initialFormValues);
-  const [users, setUsers] = useState(initialUsers);
-  const [formErrors, setFormErrors] = useState([]);
+  const [formErrors, setFormErrors] = useState(initialFormErrors);
+
+  // const getUsers = () => {
+  //   axios
+  //     .get("https://reqres.in/api/users")
+  //     .then((response) => {
+  //       setUsers(response.data.data);
+  //     })
+  //     .catch((errors) => {
+  //       console.log(errors);
+  //     });
+  // };
 
   const postNewUser = (newUser) => {
     axios
       .post("https://reqres.in/api/users", newUser)
       .then((response) => {
-        setUsers(response.data);
+        setUsers([...users, response.data]);
       })
       .catch((error) => {
         console.log(error);
@@ -70,6 +79,22 @@ function App() {
   const onCheckBoxChange = (event) => {
     const { name, checked } = event.target;
 
+    Yup.reach(formValidation, name)
+      .validate(checked)
+      .then(() => {
+        setFormErrors({
+          ...formErrors,
+          [name]: "",
+        });
+      })
+
+      .catch((error) => {
+        setFormErrors({
+          ...formErrors,
+          [name]: error.errors[0],
+        });
+      });
+
     setFormValues({
       ...formValues,
       [name]: checked,
@@ -80,6 +105,7 @@ function App() {
     event.preventDefault();
 
     const newUser = {
+      id: uuid(),
       name: formValues.name,
       email: formValues.email,
       password: formValues.password,
@@ -99,6 +125,11 @@ function App() {
         values={formValues}
         errors={formErrors}
       />
+      <div>
+        {users.map((user) => {
+          return <User key={user.id} details={user} />;
+        })}
+      </div>
     </div>
   );
 }
